@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block body %}<!-- HTML template -->
+    <div class="content-wrapper">
+    {% include 'message.html' %}
+
+    <div class="row">
+        <div class="col-md-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+            <h4 class="card-title">Add Product</h4>
+    <form action="{% url 'saveproduct' %}" id="product-form" method="POST">
+        {% csrf_token %}
+        <div class="form-group row mt-2 mb-0">
+            <div class="col-sm">
+            <div class="form-group mb-3">
+                <label for="{{ form.name.id_for_label }}" class="control-label">{{form.name.label}}</label>
+                {{form.name}}
+            </div>
+            </div>
+            <div class="col-sm">
+            <div class="form-group mb-3 ">
+                <label for="{{ form.price.id_for_label }}" class="control-label">{{form.price.label}}</label>
+                {{form.price}}
+            </div>
+            </div>
+        </div>
+        <div class="form-group row mt-2 mb-0">
+            <div class="col-sm">
+            <div class="form-group mb-3 ">
+                <label for="{{ form.totalquantity.id_for_label }}" class="control-label">{{form.totalquantity.label}}</label>
+                {{form.totalquantity}}
+            </div>
+            </div>
+            <div class="col-sm">
+            <div class="form-group mb-3 ">
+                <label for="{{from.status.id_for_label}}" class="control-label">{{form.status.label}}</label>
+                {{form.status}}
+            </div>
+            </div>
+        </div>
+        <div class="form-group row mt-2 mb-0">
+            <div class="col-sm">
+                <div class="form-group mb-3">
+                    <label for="{{form.description.id_for_label}}" class="control-label">{{form.description.label}}</label>
+                    {{form.description}}
+                </div>
+            </div>
+            <div class="col-sm">
+                <button type="submit" id="add_to_list" class="btn btn-primary me-2 btn-md mt-4">Add Product</button>
+                </form>
+                </div>
+        </div>
+        <div class="form-group row mt-2 mb-0 mt-3">
+            <div class="col-sm">
+                <div class="form-group mb-3">
+                <h4 class="fw-bolder pb-1">CSV File Upload Instruction</h4>
+                <p>If the you add product automatic then use the csv file to add product automatically in system.<span class="text-danger">In the CSV File Add 1000 Max Quantity At A One Time.</span> If see the sample csv file you can download from here. <a href="{% url 'download_csv' %}">Download CSV</a></p>
+                </div>
+            </div>
+            <div class="col-sm  ">
+                <div class="form-group mb-3">
+                    <form action="{% url 'upload_csv' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <label for="csv_file" class="control-label">Upload CSV File</label>
+                        <input type="file" id="csv_file" name="csv_file" class="form-control" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" onchange="validateFileType()">
+                        <button type="submit" class="btn btn-primary me-2 mt-3 btn-md">Upload CSV</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+</div>
+</div>
+</div>
+{% endblock body %}
+
+{% block script %}
+
+<script type="text/javascript">
+    function validateFileType(){
+        var fileName = document.getElementById("csv_file").value;
+        var idxDot = fileName.lastIndexOf(".") + 1;
+        var extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+        if (extFile=="csv"){
+        }else{
+            alert("Only CSV files are allowed!");
+            document.getElementById("csv_file").value = "";
+        }
+    }
+</script>
+
+{% endblock script %}

@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block body %}
+<style>
+  .material-symbols-outlined {
+    font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 20,
+  }
+</style>
+
+    <div class="content-wrapper">
+    {% include 'message.html' %}
+
+    <div class="row">
+        <div class="col-md-5 grid-margin">
+        <div class="card">
+            <div class="card-body">
+            <h4 class="card-title">Add Items</h4>
+            <form class="forms-sample" method="post" action="{% url 'Additem' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Select Product</label>
+                    <input id="pid" name="pid" class="form-control rounded-0" list="items">
+                        <datalist id="items">
+                        <option value="" selected="selected" disabled="disabled"></option>
+                        {% for product in products %}
+                            <option value="{{ product.name }}" data-price="{{ product.price }}">{{ product }}</option>
+                        {% endfor %}
+                        </datalist>
+                </div>
+
+                <div class="form-group">
+                    <label for="itemprice">Item Price</label>
+                    <input type="number" class="form-control" id="itemprice" placeholder="Item Price" disabled>
+                </div>
+                <div class="form-group">
+                <label for="quntity">Select Quntity</label>
+                <input type="number" class="form-control" name="quantity" id="quntity" placeholder="Quntity">
+                </div>
+                <button type="submit" id="add_to_list" class="btn btn-primary me-2">Add</button>
+            </form>
+            </div>
+        </div>
+        </div>
+        <div class="col-md-7 grid-margin">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">List All Item</h4>
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="product-tbl" name="product-tbl">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Item</th>
+                                    <th>Item Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total cost</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                    {% for bill_item in bill_items %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ bill_item.tempname }}</td>
+                                        <td>{{ bill_item.tempprice }}</td>
+                                        <td>{{ bill_item.tempquntity }}</td>
+                                        <td>Rs. {{ bill_item.temptotal }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-outline-danger me-1 btn-sm" href="{% url 'Deletetempitem' bill_item.tempname %}" data-bs-toggle="modal" data-bs-target="#mydelete{{forloop.counter}}"><span class="mdi mdi-delete"></span></button>
+                                            <div class="modal" id="mydelete{{forloop.counter}}" tabindex="-1" aria-labelledby="myModalLabel1" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">{{bill_item.tempname}}</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true"></span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>Are you sure you want to delete this item?</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <form action="{% url 'Deletetempitem' bill_item.tempname %}" method="POST">
+                                                            {% csrf_token %}
+                                                            <input type="submit" class="btn btn-primary" value="Delete">
+                                                        </form>
+                                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                                                    </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="4"><b>Total</b></th>
+                                    <th colspan="2">
+                                        <input type="hidden" name="total" value="0">
+                                        <span class="fw-bold" id="total">Rs. {{total_price.total_price}}</span>
+                                    </th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                        <form method="post" action="{% url 'Createbill' %}">
+                            {% csrf_token %}
+                            <div class="form-group row mt-2 mb-0">
+                                <div class="col-sm">
+                                    <label for="custname"><h5 class="pt-2">Customer Name</h5></label>
+                                    <input type="text" class="form-control" name="custname" id="custname" placeholder="Customer Name">
+                                </div>
+                                <div class="col-sm">
+                                    <label for="custmobile"><h5 class="pt-2">Customer Mobile</h5></label>
+                                    <input type="nubmer" class="form-control" name="custmobile" id="custmobile mobile-input" placeholder="Mobile Number">
+                                </div>
+                                <div class="col-sm">
+                                    <label for="custmobile"><h5 class="pt-2">Payment</h5></label>
+                                    <select class="form-control" name="payment">
+                                        <option value="1" default>Cash</option>
+                                        <option value="2">Online</option>
+                                        <option value="3">Pending</option>
+                                    </select>
+                                </div>
+                                <div class="mt-3">
+                                <div class="col-sm">
+                                </div>
+                                <div class="col-sm text-end d-flex flex-row-reverse">
+                                    <button type="submit" class="btn btn-primary">Create Bill</button>
+                                    </form>
+                                    <form method="post" action="{% url 'Deleteitem' %}">
+                                    {% csrf_token %}
+                                    <button class="btn btn-light me-md-2">Cancel</button>
+                                    </form>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+    </div>
+</div>
+</div>
+
+{% endblock body %}
+
+{% block script %}
+<script>
+    $(document).ready(function() {
+        $('#pid').on('change', function() {
+          var selectedOption = $('#items option[value="' + $(this).val() + '"]');
+          var price = selectedOption.data('price');
+          $('#itemprice').val(price);
+        });
+      });
+</script>
+
+{% endblock script %}
