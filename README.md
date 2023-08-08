@@ -5,7 +5,7 @@
 The first thing to do is to clone the repository:
 
 ```sh
-$ git clone https://github.com/MeetSherasiya/Exam_question_blog.git
+$ git clone https://github.com/MeetSherasiya/makemine_software.git
 $ cd makemine_software
 ```
 
@@ -32,4 +32,16 @@ Once `pip` has finished downloading the dependencies:
 And navigate to `http://127.0.0.1:8000/`.
 
 ## Home Page
-
+<img src='screenshot/homepage.png' >
+<br>
+<p>Add Product Page</p>
+<img src='screenshot/addproduct.png'>
+<br>
+<p>All Product Page</p>
+<img src='screenshot/allproduct.png'>
+<br>
+<p>Customer Bills Page</p>
+<img src='screenshot/customerbill.png'>
+<br>
+<p>Bill Page</p>
+<img src='screenshot/bill.png'>
