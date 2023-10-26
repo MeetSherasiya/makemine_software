@@ -13,7 +13,7 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                     <div class="modal-header">
-                        <form action="{% url 'addstock' product.name %}" method="POST">
+                        <form action="{% url 'addstock' product.id %}" method="POST">
                         {% csrf_token %}
                         <h5 class="modal-title">Add Quantity</h5>
                     </div>
@@ -48,26 +48,28 @@
                             <dd class="fw-bold mt-1 h6">{{ product.name }}</dd>
                         </div>
                         <div class="col-md mt-1">
-                            <dt class="text-secondary h6">Price</dt>
-                            <dd class="fw-bold mt-1 h6">{{ product.price }}</dd>
+                            <dt class="text-secondary h6">Size</dt>
+                            <dd class="fw-bold mt-1 h6">{{ product.size }}</dd>
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-md mt-1">
+                            <dt class="text-secondary h6">Price</dt>
+                            <dd class="fw-bold mt-1 h6">{{ product.price }}</dd>
+                        </div>
                         <div class="col-md mt-1">
                             <dt class="text-secondary h6">Available Quantity</dt>
                             <dd class="fw-bold mt-1 h6">{{ product.totalquantity }}</dd>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md mt-1">
                             <dt class="text-secondary h6">Status</dt>
                             <dd class="fw-bold mt-1 h6">{% if product.status == "1" %} Active {% else %} Inactive {% endif %}</dd>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md mt-1">
                             <dt class="text-secondary h6">Description</dt>
                             <dd class="fw-bold mt-1 h6">{% if product.description == "" %} Nothing {% else %} {{product.description}} {% endif %}</dd>
-                        </div>
-                        <div class="col-md">
                         </div>
                     </div>
                 </dl>
@@ -81,14 +83,14 @@
                         <col width="25%">
                         <col width="25%">
                         <col width="25%">
-                        <col width="20%">
+                        {% comment %} <col width="20%"> {% endcomment %}
                     </colgroup>
                     <thead>
                         <th class="text-center">No.</th>
                         <th class="text-center">Data/Time</th>
                         <th class="text-center">Quantity</th>
                         <th class="text-center">Type</th>
-                        <th class="text-center">Action</th>
+                        {% comment %} <th class="text-center">Action</th> {% endcomment %}
                     </thead>
                     <tbody>
                         {% if stocks %}
@@ -102,9 +104,9 @@
                                 <span class="badge px-3 rounded-pill bg-primary bg-gradient">Stock In</span> {% else %}
                                 <span class="badge px-3 rounded-pill bg-danger bg-gradient">Stock Out</span> {% endif %}
                             </td>
-                            <td class="text-center">
+                            {% comment %} <td class="text-center">
                                 Delete Btn
-                            </td>
+                            </td> {% endcomment %}
                         </tr>
                         {% endfor %}
                         {% endif %}

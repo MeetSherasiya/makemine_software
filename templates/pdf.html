@@ -84,9 +84,10 @@
     <h3 class="mb-2">Buyer:</h3>
     <h3 class="text-dark mb-1">{{custname}}</h3>
     <div>Phone: +91 {{custnumb}}</div>
+    {% if custemail %}<div>Email : {{custemail}}</div>{% endif %}
     </div>
     <div class="col-sm-6" id="buyer">
-    <h3 class="mb-2">Saller:</h3>
+    <h3 class="mb-2">Seller:</h3>
     <h3 class="text-dark mb-1">Meet Sherasiya</h3>
     <div>29, Iscon Street</div>
     <div>Sattelite, Ahmedabad 380015</div>
@@ -100,6 +101,7 @@
     <tr>
     <th class="center">No.</th>
     <th>Product Name</th>
+    <th>Product Size</th>
     <th class="right">Price</th>
     <th class="center">Qty</th>
     <th class="right">Total</th>
@@ -110,6 +112,7 @@
     <tr>
     <td class="center">{{forloop.counter}}</td>
     <td class="left strong">{{item.itemname}}</td>
+    <td class="left strong">{{item.itemsize}}</td>
     <td class="left strong">Rs. {{item.itemprice}}</td>
     <td class="left strong">{{item.itemquntity}}</td>
     <td class="left strong">{{item.itemtotal}}</td>
@@ -124,18 +127,29 @@
     <div class="col-lg-4 col-sm-6">
     <table class="table table-clear">
     <tbody>
-    <tr>
-    <td class="left">
-    <strong class="text-dark">Total Items</strong>
-    </td>
-    <td class="right text-end">{{totalitem.total}}</td>
-    </tr>
-    <tr>
-    <td class="left">
-    <strong class="text-dark">Total</strong>
-    </td>
-    <td class="right text-end">Rs. {{totalprice.total}}</td>
-    </tr>
+        <tr>
+            <td class="left">
+                <strong class="text-dark">Total</strong>
+            </td>
+            <td class="right text-end">Rs. {{totalprice.total}}</td>
+        </tr>
+        <tr>
+            <td class="left">
+            <strong class="text-dark">Total Items</strong>
+            </td>
+            <td class="right text-end">{{totalitem.total}}</td>
+        </tr>
+        <tr>
+            <td class="left">
+            <strong class="text-dark">Discount</strong>
+            </td>
+            <td class="right text-end">Rs. {{discount}}</td>
+        </tr>
+            <td class="left">
+            <strong class="text-dark">Total Pay</strong>
+            </td>
+            <td class="right text-end">Rs. {{payprice}}</td>
+        </tr>
     </tbody>
     </table>
     </div>

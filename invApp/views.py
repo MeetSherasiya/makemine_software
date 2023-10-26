@@ -13,14 +13,15 @@ from django.http import HttpResponseRedirect
 import csv
 from django.http import HttpResponse
 import string
-import time
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 
 def login_user(request):
     logout(request)
     try:
         if request.user.is_authenticated:
-            return redirect('/dashboard/')
+            return redirect('/')
 
         if request.method == "POST":
             username = request.POST['username']
@@ -33,13 +34,13 @@ def login_user(request):
             if myuser is not None:
                 if myuser.is_staff or myuser.is_superuser:
                     login(request, myuser)
-                    return redirect(request.POST.get('next', '/dashboard/'))
+                    return redirect(request.POST.get('next', '/'))
                 else:
                     messages.warning(request, 'User not Access')
-                    return redirect('/')
+                    return redirect('/login/')
             else:
                 messages.warning(request, 'Invalid Password')
-                return redirect('/')
+                return redirect('/login/')
 
         return render(request,'login.html')
     except Exception as e:
@@ -49,11 +50,23 @@ def login_user(request):
 
 def logout_user(request):
     logout(request)
-    return redirect('/')
+    return redirect('/login/')
 
+def signup_user(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your Account Create Successfully')
+            return redirect('login_user')
+    else:
+        form = SignUpForm()
+    return render(request, 'signup.html', {'form': form})
 
-@login_required
+# @login_required
 def index(request):
+    if not request.user.is_authenticated:
+        return render(request, 'documentation.html')
     products = Product.objects.filter(status = 1).all()
     tempproducts = Tempitem.objects.all()
     total_price = Tempitem.objects.aggregate(total_price=models.Sum('temptotal'))
@@ -68,26 +81,29 @@ def index(request):
 def add(request):
     if request.method == 'POST':
         selected_items = request.POST.get('pid')
+        selected_size = request.POST.get('itemsize')
+        selected_price = request.POST.get('itemprice')
         if selected_items is None:
             messages.warning(request, f'Select the item.')
-            return redirect('/dashboard/')
-        price = Product.objects.filter(name = selected_items).values('price')
-        quntity = Product.objects.filter(name = selected_items).values('totalquantity')
+            return redirect('/')
+        # price = Product.objects.filter(name = selected_items, size=selected_size).values('price')
+        price = float(selected_price)
+        quntity = Product.objects.filter(name = selected_items, size=selected_size).values('totalquantity')
         quntity = quntity[0]['totalquantity']
-        price = price[0]['price']
+        # price = price[0]['price']
         quantities = request.POST.get('quantity')
         cost = float(price) * int(quantities)
         products = Product.objects.filter(status = 1).all()
 
         if int(quantities) <= quntity :
             try:
-                item = Tempitem.objects.filter(tempname=selected_items).get()
+                item = Tempitem.objects.filter(tempname=selected_items, tempsize = selected_size).get()
                 item.tempprice = price
                 item.tempquntity = quantities
                 item.temptotal = cost
                 item.save()
             except Tempitem.DoesNotExist:
-                item = Tempitem.objects.create(tempname=selected_items, tempprice=price, tempquntity=quantities, temptotal=cost)
+                item = Tempitem.objects.create(tempname=selected_items,tempsize = selected_size, tempprice=price, tempquntity=quantities, temptotal=cost)
 
             tempproducts = Tempitem.objects.all()
             total_price = Tempitem.objects.aggregate(total_price=models.Sum('temptotal'))
@@ -96,39 +112,54 @@ def add(request):
                 'bill_items': tempproducts,
                 'total_price': total_price,
             }
-            return redirect('/dashboard/', context)
+            return redirect('/', context)
         else:
-            messages.warning(request, f'Maxmimum quntity of {selected_items} item is {quntity}.')
-            return redirect('/dashboard/')
+            messages.warning(request, f'Maxmimum quntity of {selected_items} | {selected_size} item is {quntity}.')
+            return redirect('/')
 
 @login_required
 def delete(request):
     Tempitem.objects.all().delete()
     CustomerBill.objects.all().delete()
-    return redirect('/dashboard/')
+    return redirect('/')
 
 @login_required
 def delete_item(request, id):
     if request.method == "POST":
-        item = Tempitem.objects.get(tempname=id)
+        item = Tempitem.objects.get(id=id)
         item.delete()
-        return redirect('/dashboard/')
+        return redirect('/')
 
 @login_required
 def create_bill(request):
     items = Tempitem.objects.all()
     if not items:
         messages.warning(request, 'Enter items in  bill.')
-        return redirect('/dashboard/')
+        return redirect('/')
     totalitems = Tempitem.objects.aggregate(total=Sum('tempquntity'))
     totalprice = Tempitem.objects.aggregate(total=Sum('temptotal'))
     if request.method == "POST":
         custname = request.POST.get('custname')
         custnumb = request.POST.get('custmobile')
+        custemail = request.POST.get('custemail')
         payment = request.POST.get('payment')
+        discount = request.POST.get('discount')
+        if discount != "":
+            discount = float(discount)
+        else:
+            discount = 0
+        percent_discount = request.POST.get('discount_percentage')
+        if percent_discount != "":
+            percent_discount = float(percent_discount)
+        else:
+            percent_discount = 0
+        payprice = int(totalprice['total'] - discount)
         if custname == '' or custnumb == '':
             messages.warning(request, 'Enter the Customer Detials.')
-            return redirect('/dashboard/')
+            return redirect('/')
+        if len(custnumb) != 10:
+            messages.warning(request, 'Enter the Customer Number Properly.')
+            return redirect('/')
 
     pref = datetime.today().strftime('%Y%m%d')
     date = datetime.today()
@@ -144,6 +175,7 @@ def create_bill(request):
     for item in items:
         bill = invoiceitem()
         bill.itemname = item.tempname
+        bill.itemsize = item.tempsize
         bill.itemprice = item.tempprice
         bill.itemquntity = item.tempquntity
         bill.itemtotal = item.temptotal
@@ -153,17 +185,29 @@ def create_bill(request):
     for item in items:
         bill = stockhistory()
         bill.itemname = item.tempname
+        bill.itemsize = item.tempsize
         bill.itemquntity = item.tempquntity
         bill.status = 2
         bill.save()
 
     for item in items:
-        update_product_quantity(item.tempname , item.tempquntity)
+        update_product_quantity(item.tempname, item.tempsize , item.tempquntity)
 
-    CustomerBill.objects.create(custname=custname, custnumb=custnumb, totalitem =totalitems['total'], totalprice=totalprice['total'], itemcode = transactionalcode, payment=payment)
+    CustomerBill.objects.create(custname=custname, custnumb=custnumb, custemail = custemail, totalitem =totalitems['total'], totalprice=totalprice['total'], itemcode = transactionalcode, payment=payment, discount=discount, per_discount=percent_discount, payprice = payprice)
     Tempitem.objects.all().delete()
     data = invoiceitem.objects.filter(itemcode=transactionalcode)
-    context = {'custname': custname, 'custnumb': custnumb, 'totalprice': totalprice, 'totalitem': totalitems, 'itemcode': transactionalcode, 'data': data, 'date': date, 'payment': payment}
+    context = {'custname': custname, 'custnumb': custnumb, 'custemail': custemail, 'totalprice': totalprice, 'totalitem': totalitems, 'itemcode': transactionalcode, 'data': data, 'date': date, 'payment': payment, 'discount': discount, 'per_discount': percent_discount, 'payprice': payprice}
+    if custemail:
+        subject = 'Makemine Software Bill'
+        message = 'Thankyou For Purchasing From Makemine.'
+        from_email = 'meetsherasiya635@gmail.com'  # Replace with your email address
+        recipient_list = [custemail]
+
+        # Render the bill as a PDF (you might need to adjust this part based on your implementation)
+        rendered_bill = render_to_string('pdf.html', context)
+
+        # Send the email with the bill as an attachment (you might need to adjust this part based on your implementation)
+        send_mail(subject, message, from_email, recipient_list, fail_silently=False, html_message=rendered_bill)
     return render(request, 'pdf.html', context)
 
 @login_required
@@ -178,8 +222,8 @@ def viewpdf(request, code):
     context = {'data':data, 'item':item}
     return render(request,'viewpdf.html',context)
 
-def update_product_quantity(itemname, itemquntity):
-    product = get_object_or_404(Product, name=itemname)
+def update_product_quantity(itemname,itemsize, itemquntity):
+    product = get_object_or_404(Product, name=itemname, size=itemsize)
     product.totalquantity -= itemquntity
     product.save()
 
@@ -195,16 +239,17 @@ def save_product(request):
         form = AddProduct(request.POST)
         if form.is_valid():
             product_name = form.cleaned_data['name']
-            if not Product.objects.filter(name=product_name).exists():
+            product_size = form.cleaned_data['size']
+            if not Product.objects.filter(name=product_name, size=product_size).exists():
                 form.save()
                 messages.success(request, 'Product saved successfully.')
             else:
-                messages.warning(request, 'Product with the same name already exists.')
+                messages.warning(request, 'Product with the same name and size already exists.')
         return redirect('/product/')
 
 @login_required
 def view_product(request):
-    product = Product.objects.all()
+    product = Product.objects.order_by('id')
     myfilter = ProductFilter(request.GET, queryset=product)
     product = myfilter.qs
     paginator = Paginator(product, 10)
@@ -214,32 +259,33 @@ def view_product(request):
     return render(request, 'view_product.html', context)
 
 @login_required
-def edit_product(request, name):
-    product = Product.objects.get(name=name)
+def edit_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
     if request.method == "POST":
-        product = Product.objects.get(name=name)
+        product = Product.objects.get(name= product.name, size= product.size)
         form = EditProduct(request.POST, instance=product)
         if form.is_valid():
             form.save()
             messages.success(request, 'Product Update Successfully.')
             return redirect('/viewproduct/')
     else:
-        product = Product.objects.get(name=name)
+        product = Product.objects.get(name= product.name, size= product.size)
         form = EditProduct(instance=product)
     return render(request, 'editproduct.html',{'form': form})
 
 @login_required
-def delete_product(request, name):
+def delete_product(request, product_id):
     if request.method == "POST":
-        product = Product.objects.get(name=name)
+        product = get_object_or_404(Product, id=product_id)
         product.delete()
         messages.success(request, 'Delete Product Successfully.')
     return redirect('/viewproduct/')
 
 @login_required
-def show_product(request, name):
-    product = Product.objects.get(name=name)
-    stock = stockhistory.objects.filter(itemname=name)
+def show_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    stock = stockhistory.objects.filter(itemname=product.name, itemsize = product.size)
+    stock = stock.order_by('-id')
     paginator = Paginator(stock, 10)
     page = request.GET.get('page')
     stocks = paginator.get_page(page)
@@ -250,9 +296,9 @@ def show_product(request, name):
     return render(request, 'showproduct.html', context)
 
 @login_required
-def add_stock(request, name):
-    product = Product.objects.get(name=name)
-    products = Product.objects.filter(name=name).values('totalquantity')
+def add_stock(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    products = Product.objects.filter(name= product.name, size= product.size).values('totalquantity')
     total = products[0]['totalquantity']
     if request.method == "POST":
         quantity = request.POST.get('quntity')
@@ -261,21 +307,21 @@ def add_stock(request, name):
             total -= int(quantity)
             product.totalquantity = total
             product.save()
-            new_stock = stockhistory(itemname = name, itemquntity = quantity, status = 2)
+            new_stock = stockhistory(itemname = product.name, itemsize = product.size, itemquntity = quantity, status = 2)
             new_stock.save()
             messages.success(request, 'Remove Stock Successfully.')
         else:
             total += int(quantity)
             product.totalquantity = total
             product.save()
-            new_stock = stockhistory(itemname = name, itemquntity = quantity, status = 1)
+            new_stock = stockhistory(itemname = product.name,itemsize = product.size, itemquntity = quantity, status = 1)
             new_stock.save()
             messages.success(request, 'Add Stock Successfully.')
     return redirect('/viewproduct/')
 
 @login_required
 def customer(request):
-    customer = CustomerBill.objects.all()
+    customer = CustomerBill.objects.order_by('-id')
     myfilter = CustomerFilter(request.GET, queryset=customer)
     customer = myfilter.qs
     paginator = Paginator(customer, 10)
@@ -311,9 +357,11 @@ def upload_csv(request):
                 for row in csv_data:
                     name = row[0]
                     name = string.capwords(name, sep=None)
-                    price = float(row[1])
-                    quntity = int(row[2])
-                    description = row[3]
+                    size = row[1]
+                    size = string.capwords(size, sep=None)
+                    price = float(row[2])
+                    quntity = int(row[3])
+                    description = row[4]
 
                 if name == "":
                     raw_list = []
@@ -322,6 +370,7 @@ def upload_csv(request):
 
                 if quntity<1000:
                     raw_list.append(name)
+                    raw_list.append(size)
                     raw_list.append(price)
                     raw_list.append(quntity)
                     raw_list.append(description)
@@ -348,31 +397,32 @@ def download_csv(request):
     response = HttpResponse('text/csv')
     response['Content-Disposition'] = 'attachment; filename=sample.csv'
     writer = csv.writer(response)
-    writer.writerow(['Product Name', 'Price', 'Quantity', 'Description'])
+    writer.writerow(['Product Name','Product Size', 'Price', 'Quantity', 'Description'])
 
     return response
 
 
 def update_csv(raw_list):
-    for i in range(0, len(raw_list), 4):
+    for i in range(0, len(raw_list), 5):
         name = raw_list[i]
-        price = raw_list[i + 1]
-        quntity = raw_list[i + 2]
-        description = raw_list[i + 3]
+        size = raw_list[i + 1]
+        price = raw_list[i + 2]
+        quntity = raw_list[i + 3]
+        description = raw_list[i + 4]
 
-        if not Product.objects.filter(name=name).exists():
-            product = Product(name=name, price=price, description=description, totalquantity=quntity)
+        if not Product.objects.filter(name=name, size=size).exists():
+            product = Product(name=name, size=size, price=price, description=description, totalquantity=quntity)
             product.save()
-            new_stock = stockhistory(itemname = name, itemquntity = quntity, status = 1)
+            new_stock = stockhistory(itemname = name,itemsize = size, itemquntity = quntity, status = 1)
             new_stock.save()
         else:
-            product = Product.objects.get(name=name)
-            products = Product.objects.filter(name=name).values('totalquantity')
+            product = Product.objects.get(name=name, size=size)
+            products = Product.objects.filter(name=name, size=size).values('totalquantity')
             total = products[0]['totalquantity']
             total += int(quntity)
             product.totalquantity = total
             product.save()
-            new_stock = stockhistory(itemname = name, itemquntity = quntity, status = 1)
+            new_stock = stockhistory(itemname = name, itemsize = size, itemquntity = quntity, status = 1)
             new_stock.save()
 
 

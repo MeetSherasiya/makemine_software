@@ -1,0 +1,210 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Plywood Software</title>
+
+    <!-- Include Open Sans font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="{% static 'vendors/feather/feather.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/mdi/css/materialdesignicons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/ti-icons/css/themify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/typicons/typicons.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/simple-line-icons/css/simple-line-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/css/vendor.bundle.base.css' %}">
+    <!-- endinject -->
+
+    <!-- Plugin css for this page -->
+    <!-- <link rel="stylesheet" href="{% static 'vendors/datatables.net-bs4/dataTables.bootstrap4.css' %}"> 
+    <link rel="stylesheet" href="{% static 'js/select.dataTables.min.css' %}"> -->
+    <!-- End plugin css for this page -->
+
+    <!-- inject:css -->
+    <link rel="stylesheet" href="{% static 'css/vertical-layout-light/style.css' %}">
+    <!-- endinject -->
+
+    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" />
+    <style>
+        @media screen and (max-width: 991px){
+          .sidebar-offcanvas.active {
+              left: 0;
+          }
+        }
+
+        /* Apply the Open Sans font to the body */
+        body {
+          font-family: 'Open Sans', sans-serif;
+        }
+    </style>
+  </head>
+<body class="sidebar-dark sidebar-icon-only">
+
+<!-- partial:partials/_navbar.html -->
+<nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-lg-row">
+    <div class="text-center navbar-brand-wrapper d-inline-flex align-items-center justify-content-start bg-dark ">
+        <div class="d-flex m-auto">
+        <button class="navbar-toggler navbar-toggler align-self-center me-2" type="button" data-bs-toggle="minimize">
+            <span class="icon-menu text-white"></span>
+        </button>
+        <a class="navbar-brand brand-logo" href="/">
+            <img src="{% static 'images/makemine_logo.png' %}" alt="logo" />
+        </a>
+        {% comment %} <a class="navbar-brand brand-logo-mini" href="/">
+            <img src="{% static 'images/logo-mini.svg' %}" alt="logo" />
+        </a> {% endcomment %}
+          <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas" style="padding-left:0;">
+          <span class="mdi mdi-menu"></span>
+          </button>
+        </div>
+    </div>
+  <div class="navbar-menu-wrapper d-flex align-items-top bg-dark">
+      <ul class="navbar-nav">
+      <li class="nav-item font-weight-semibold d-none d-lg-block ms-0">
+          <h1 class="welcome-text text-white font-weight-bold">Welcome To Makemine Software</h1>
+      </li>
+      </ul>
+      <ul class="navbar-nav ms-auto">
+      <li class="nav-item dropdown d-sm-block">
+          <a class="btn btn-sm btn-primary text-white" href="{% url 'login_user' %}"><i class="dropdown-item-icon mdi mdi-power text-white me-2"></i>Login</a>
+          </div>
+      </li>
+      </ul>
+  </div>
+</nav>
+
+<!-- partial -->
+<div class="container-fluid page-body-wrapper">
+    <nav class="sidebar sidebar-offcanvas bg-dark" id="sidebar" style="position:fixed;">
+        <ul class="nav">
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="mdi mdi-grid-large menu-icon"></i>
+                <span class="menu-title">Dashboard</span>
+              </a>
+            </li>
+        </ul>
+    </nav>
+    <div class="main-panel" style="margin-left:auto;">
+      <div class="content-wrapper">
+        <div class="row">
+          <div class="col-md-6 grid-margin">
+          <div class="card">
+              <div class="card-body">
+              <h3 style="font-weight:bold;" class="pb-2">Plywood Managment System</h3>
+              <p style="font-size:medium; line-height:1.5;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Welcome to the Plywood Management System, a cutting-edge solution meticulously crafted to revolutionize the way you manage your plywood business. Our comprehensive software is tailored to meet the diverse needs of the industry, providing an all-encompassing platform for efficient stock management, seamless billing processes, and enhanced customer communication.</p>
+              <br>
+              <h3 style="font-weight:bold;" class="pb-2">About Plywood Management System</h3>
+              <p style="font-size:medium; line-height:1.5;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In the dynamic landscape of the plywood industry, staying ahead requires a robust system that understands and adapts to the unique challenges you face. The Plywood Management System is your digital ally, offering a suite of features designed to optimize operations, reduce manual workload, and elevate your business to new heights of productivity.</p>
+              <br>
+              <h3 style="font-weight:bold;" class="pb-3">Key Features</h3>
+                  <h4 style="font-weight:bold;">1. Stock Management Excellence</h4>
+                    <ul class="mx-3" style="font-size:small; line-height:1.5;">
+                      <li style="font-size:medium; line-height:1.5;">Monitor your plywood inventory in real-time, ensuring you are always in control of stock levels.</li>
+                      <li style="font-size:medium; line-height:1.5;">Categorize and organize plywood based on types, grades, and customizable attributes for comprehensive tracking.</li>
+                      <li style="font-size:medium; line-height:1.5;">Streamline the process of adding new stock and updating quantities with a user-friendly interface.</li>
+                    </ul>
+                  <h4 style="font-weight:bold;">2. Effortless Bill Management</h4>
+                    <ul class="mx-3" style="font-size:small; line-height:1.5;">
+                      <li style="font-size:medium; line-height:1.5;">Generate professional, detailed bills effortlessly with just a few clicks.</li>
+                      <li style="font-size:medium; line-height:1.5;">Access a comprehensive bill history for quick reference and seamless auditing.</li>
+                      <li style="font-size:medium; line-height:1.5;">The system automatically calculates totals, taxes, and discounts, ensuring accuracy in every transaction.</li>
+                    </ul>
+                  <h4 style="font-weight:bold;">3. User-Centric Interface</h4>
+                    <ul class="mx-3" style="font-size:small; line-height:1.5;">
+                      <li style="font-size:medium; line-height:1.5;">Navigate the system with ease through an intuitive and user-friendly design.</li>
+                      <li style="font-size:medium; line-height:1.5;">Designed to be accessible to users of all technical backgrounds, promoting widespread usability.</li>
+                      <li style="font-size:medium; line-height:1.5;">Responsive layout ensures a seamless experience across various devices, empowering you to manage your business on the go.</li>
+                    </ul>
+                  <h4 style="font-weight:bold;">4. Integrated Email Functionality</h4>
+                    <ul class="mx-3" style="font-size:small; line-height:1.5;">
+                      <li style="font-size:medium; line-height:1.5;">Communicate effectively with customers by sending bills directly via email.</li>
+                      <li style="font-size:medium; line-height:1.5;">Customize email templates to maintain a professional and branded appearance in all interactions.</li>
+                      <li style="font-size:medium; line-height:1.5;">Enhance customer engagement with automated email notifications for updates, promotions, and more.</li>
+                    </ul>
+              <br>
+              <h3 style="font-weight:bold;" class="pb-2">First-Time User Experience</h3>
+              <p style="font-size:medium; line-height:1.5;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Embarking on your journey with the Plywood Management System is a breeze, thanks to our thoughtfully designed onboarding experience</p>
+              <br>
+              <h3 style="font-weight:bold;" class="pb-2">Get Ready to Transform Your Business</h3>
+              <p style="font-size:medium; line-height:1.5;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Whether you are a burgeoning small business or an established enterprise, the Plywood Management System is engineered to simplify your operations. Embrace the power of efficient stock management, streamlined billing processes, and enhanced customer communication all in one integrated platform.</p>
+              <br>
+              <h4 style="font-weight:bold; line-height:1.5;" class="pb-2">Sign up today and embark on a journey of efficiency, growth, and success with the Plywood Management System!</h4>
+              </div>
+          </div>
+          </div>
+
+          <div class="col-md-6 grid-margin">
+            <div class="card">
+                <div class="card-body">
+                  <p class="card-title">View Our Makemine System</p>
+                  <h3 style="font-weight:bold;" class="pb-2">Home Screen</h3>
+                  <p style="font-size:medium; line-height:1.5;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Our home page offers you a seamless experience, empowering you to generate bills effortlessly and manage or view current customer bill details with unparalleled ease.</p>
+                  <a href="{% static 'system_image/homepage.png' %}" target="_blank">
+                    <img class="card-img" src="{% static 'system_image/homepage.png' %}" alt="Home Page" >
+                  </a>
+                  <br>
+                  <br>
+                  <h3 style="font-weight:bold;" class="pb-2">Add Product</h3>
+                  <p style="font-size:medium; line-height:1.5;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Introducing our Product Page – your gateway to a diverse range of high-quality products. Explore our curated selection effortlessly, with each product meticulously detailed for your convenience. Manage your inventory seamlessly with individual additions or the convenience of CSV file uploads, ensuring a streamlined and efficient stock management experience. Elevate your product tracking with precision and simplicity.</p>
+                  <a href="{% static 'system_image/addproduct.png' %}" target="_blank">
+                    <img class="card-img" src="{% static 'system_image/addproduct.png' %}" alt="Add Product Page" >
+                  </a>
+                  <br>
+                  <br>
+                  <h3 style="font-weight:bold;" class="pb-2">View Product</h3>
+                  <p style="font-size:medium; line-height:1.5;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Unveiling our comprehensive Product Page, where every product detail is meticulously laid out for your convenience. Dive into a wealth of information including product specifications, pricing, and availability. From images to descriptions, find everything you need in one centralized hub. Effortlessly navigate through our diverse offerings and make informed decisions, ensuring a seamless and informed shopping experience.</p>
+                  <a href="{% static 'system_image/allproduct.png' %}" target="_blank">
+                    <img class="card-img" src="{% static 'system_image/allproduct.png' %}" alt="ALl Product Page" >
+                  </a>
+                  <br>
+                  <br>
+                  <h3 style="font-weight:bold;" class="pb-2">View Customer History</h3>
+                  <p style="font-size:medium; line-height:1.5;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Customer Bill Page – your hub for transparent and detailed billing information. Access and review current and past customer bills with ease. Each bill is presented with precision, featuring itemized details, quantities, and total costs. Simplify your financial tracking and provide your customers with a clear understanding of their transactions. Experience hassle-free bill management and elevate customer satisfaction.</p>
+                  <a href="{% static 'system_image/customerbill.png' %}" target="_blank">
+                    <img class="card-img" src="{% static 'system_image/customerbill.png' %}" alt="ALl Customer History Page" >
+                  </a>
+                  <br>
+                  <br>
+                  <h3 style="font-weight:bold;" class="pb-2">Sample Bill</h3>
+                  <p style="font-size:medium; line-height:1.5;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sample Bill Page – a glimpse into our streamlined billing experience. Explore a representative bill showcasing itemized details, pricing, and a clear summary of the transaction. Witness firsthand how our system ensures accuracy, transparency, and professionalism in every billing interaction. Simplify your invoicing process and enhance your financial management effortlessly.</p>
+                  <a href="{% static 'system_image/bill.png' %}" target="_blank">
+                    <img class="card-img" src="{% static 'system_image/bill.png' %}" alt="Sample Bill Page" >
+                  </a>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+  <!-- plugins: js -->
+  <script src="{% static 'vendors/js/vendor.bundle.base.js' %}"></script>
+  <!-- endinject -->
+  <!-- Plugin {% static 'js for this page -->
+  <script src="{% static 'vendors/chart.js/Chart.min.js' %}"></script>
+  <script src="{% static 'vendors/bootstrap-datepicker/bootstrap-datepicker.min.js' %}"></script>
+  <script src="{% static 'vendors/progressbar.js/progressbar.min.js' %}"></script>
+
+  <!-- End plugin js for this page -->
+  <!-- inject:js -->
+  <script src="{% static 'js/off-canvas.js' %}"></script>
+  <script src="{% static 'js/hoverable-collapse.js' %}"></script>
+  <script src="{% static 'js/template.js' %}"></script>
+  <script src="{% static 'js/settings.js' %}"></script>
+  <script src="{% static 'js/todolist.js' %}"></script>
+  <!-- endinject -->
+  <!-- Custom js for this page-->
+  {% comment %} <script src="{% static 'js/jquery.cookie.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/dashboard.js' %}"></script>
+  <script src="{% static 'js/Chart.roundedBarCharts.js' %}"></script> {% endcomment %}
+  <!-- End custom js for this page-->
+  {% block script %}{% endblock script %}
+</body>
+
+</html>
+

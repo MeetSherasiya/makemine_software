@@ -23671,7 +23671,7 @@ select.tt-hint {
   padding: .4375rem .75rem;
   border: 0;
   outline: 1px solid #dee2e6;
-  color: #c9c8c8;
+  color: #000000;
 }
 
 select.form-control:focus, select.asColorPicker-input:focus, .dataTables_wrapper select:focus, .select2-container--default select.select2-selection--single:focus, .select2-container--default .select2-selection--single select.select2-search__field:focus, select.typeahead:focus,

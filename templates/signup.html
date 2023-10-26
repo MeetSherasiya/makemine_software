@@ -13,14 +13,16 @@
     <div class="main-panel">
     <div class="rounded d-flex justify-content-center align-items-center mt-5" style="text-align: -webkit-center;">
         <div class="col-lg-6 col-sm-8 shadow-lg p-4 my-0">
-            {% for message in messages %}
-            <div class="alert alert-{{message.tags}} col-lg-6 align-items-center alert-dismissible fade show" role="alert" style="text-align:left;">
-                {{message}}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="alert alert-danger col-lg-6 align-items-center alert-dismissible fade show" role="alert" style="text-align:left;">
+                        {{ error }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
             {% endfor %}
             <div class="text-center pb-2">
-                <h2 style="color:#232227" class="fw-bold">Log In</h2>
+                <h2 style="color:#232227" class="fw-bold">Sign Up</h2>
             </div>
                 <div class="p-2">
                     <form action="" method="POST">
@@ -28,24 +30,34 @@
                     <div class="input-group mb-3">
                         <span class="input-group-text" style="background-color:#232227;"><i
                                 class="bi bi-person-plus-fill text-white"></i></span>
-                        <input type="text" class="form-control" placeholder="Username" name="username">
+                        <input type="text" class="form-control" placeholder="Enter Username" name="{{form.username.name}}" id="{{form.username.id_for_label}}">
                     </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="background-color:#232227;"><i
+                                class="bi bi-envelope text-white"></i></span>
+                        <input type="email" class="form-control" placeholder="Enter Email" name="{{form.email.name}}" id="{{form.email.id_for_label}}">
+                    </div>
+
                     <div class="input-group mb-3">
                         <span class="input-group-text" style="background-color:#232227;"><i
                                 class="bi bi-key-fill text-white"></i></span>
-                        <input type="password" class="form-control" placeholder="password" name="password">
+                        <input type="password" class="form-control" placeholder="Enter Password" name="{{form.password1.name}}" id="{{form.password1.id_for_label}}">
                     </div>
-                    {% comment %} <div class="row">
-                        <div class="col-md text-end">Forgot your password?</div>
-                    </div> {% endcomment %}
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="background-color:#232227;"><i
+                                class="bi bi-key-fill text-white"></i></span>
+                        <input type="password" class="form-control" placeholder="Enter Confirm Password" name="{{form.password2.name}}" id="{{form.password2.id_for_label}}">
+                    </div>
                     <div class="text-center">
                         <button class="btn mt-1 text-light" type="submit" style="background-color:#232227">
-                            Login
+                            Register
                         </button>
                     </div>
                     </form>
-                    <p class="text-center mt-1">Don't have an account?
-                        <a href="{% url 'signup_user' %}" class="text-primary">Sign Up</a>
+                    <p class="text-center mt-1">You have an account?
+                        <a href="{% url 'login_user' %}" class="text-primary">Log in</a>
                     </p>
                 </div>
         </div>
